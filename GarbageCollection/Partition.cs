@@ -138,5 +138,20 @@ namespace GarbageCollection
                 throw new Exception($"Invalid address={address} for partition of start={StartAddress} and size={Size}.");
             }
         }
+
+        public override string ToString()
+        {
+            String objectsString = "" ;
+
+            if (_objects.Count > 0)
+            {
+                foreach (var (adresse, obj) in _objects)
+                {
+                    objectsString += adresse + ":  <" + obj.Name + ", " + obj.Size + ">\n" ;
+                }
+            }
+            else objectsString += "Vide\n";
+            return $"Start: {StartAddress}\nTaille: {Size}\nLibre: {FreeSpace}\nObjets: {objectsString}" ; 
+        }
     }
 }
