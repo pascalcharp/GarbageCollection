@@ -6,11 +6,18 @@ namespace GarbageCollectionTests ;
 public class Tests
 {
     private Mutator _mutator ; 
-    private CollectableObject _testObject ;  
+    private CollectableObject _testObject ;
+    private bool _isUpdated ; 
+    
+    private void SetUpdated  () => _isUpdated  = true ;
     
     [SetUp]
     public void Setup()
     {
+        
+        _isUpdated = false ;
+        _mutator = new Mutator () ;
+        _mutator.ReferenceUpdated += SetUpdated ; 
         _testObject = new CollectableObject("TestObject", 5, _mutator) ; 
         _mutator = new Mutator();
     }
@@ -91,6 +98,29 @@ public class Tests
             () => _testObject.UpdateReference(5, 666),
             Throws.InstanceOf<Exception>() 
             ) ;
+    }
+    
+    [Test]
+    public void UpdateReference_OnTestObject_MutatorIsNotified()
+    {
+        _testObject.AddReferences([0, 1, 2, 3]) ;
+        _testObject.UpdateReference(2, 666) ;
+        Assert.That(_isUpdated, Is.EqualTo(true)) ;
+    }
+
+    [Test]
+    public void UpdateReference_OnTestObject_WithInvalidReference_MutatorNotNotified()
+    {
+        _testObject.AddReferences([0, 1, 2, 3]) ;
+        try
+        {
+            _testObject.UpdateReference(5, 666) ;
+        }
+        catch (Exception e)
+        {
+            Assert.That(_isUpdated, Is.False) ;
+        }
+        
     }
     
 }
