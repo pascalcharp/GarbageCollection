@@ -54,5 +54,21 @@ namespace GarbageCollection
 
             _mutator.PostProcessUpdateReference();
         }
+
+        public override String ToString()
+        {
+            String refString = "[" ;
+            for (int i = 0; i < References.Count; ++i)
+            {
+                refString += References[i] ;
+                if (i != References.Count - 1)
+                {
+                    refString += ", " ;
+                }
+            }
+            refString += "]" ;
+            return $"Nom: {Name}\nTaille: {Size}\nReferences: {refString}" ;
+        }
+        
     }
 }
