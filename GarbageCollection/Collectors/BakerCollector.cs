@@ -12,14 +12,16 @@ namespace GarbageCollection.Collectors
         public static int NbPartitions => 1;
 
         private readonly EnvironmentMemory _memory;
+        private Mutator _mutator ;
 
-        /* ------- À COMPLÉTER ------- */
+        private 
 
         public BakerCollector(EnvironmentMemory memory, Mutator mutator)
         {
             _memory = memory;
-
-            /* ------- À COMPLÉTER ------- */
+            _mutator = mutator;
+        
+            
         }
 
         public bool ShouldCollect()

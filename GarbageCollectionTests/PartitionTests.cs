@@ -6,10 +6,10 @@ public class PartitionTests
 {
     private Partition _partition ;
     private Mutator _mutator ;
-    private int _lastAdded ; 
-    private CollectableObject _obj1, _obj2, _obj3, _obj4, _obj5, _obj6, _obj7 ; 
-    
-    private Dictionary<int, CollectableObject> _objects  ;
+    private int _lastAdded ;
+    private CollectableObject _obj1, _obj2, _obj3, _obj4, _obj5, _obj6, _obj7 ;
+
+    private Dictionary<int, CollectableObject> _objects ;
 
 
     private void GetLastAddedAdress(int adress)
@@ -20,17 +20,18 @@ public class PartitionTests
     private void RemoveAddedAdress(CollectableObject obj)
     {
         foreach (var (adress, item) in _objects)
-            if (item == obj) _objects.Remove(adress) ;
+            if (item == obj)
+                _objects.Remove(adress) ;
     }
 
     [SetUp]
     public void Setup()
     {
-        _objects = new ([]) ;
+        _objects = new([]) ;
         _mutator = new Mutator() ;
         _mutator.Added += GetLastAddedAdress ;
-        _mutator.Released += RemoveAddedAdress ; 
-        
+        _mutator.Released += RemoveAddedAdress ;
+
         _partition = new Partition(0, 100, _mutator) ;
         _lastAdded = 101 ;
 
@@ -63,7 +64,7 @@ public class PartitionTests
         _partition.Add(_obj1) ;
         _objects.Add(_lastAdded, _obj1) ;
         Assert.That(_objects.Count, Is.EqualTo(1)) ;
-        Assert.That( () => _partition.Free(_objects.Single().Key), Throws.Nothing ) ;
+        Assert.That(() => _partition.Free(_objects.Single().Key), Throws.Nothing) ;
         Assert.That(_partition.FreeSpace, Is.EqualTo(100)) ;
     }
 
@@ -96,9 +97,9 @@ public class PartitionTests
         _objects.Add(_lastAdded, _obj6) ;
         Assert.That(_objects.Keys, Has.Exactly(1).EqualTo(0)) ;
         Assert.That(_objects.Count, Is.EqualTo(3)) ;
-        
+
     }
-    
+
     [Test]
     public void OnMultipleAddAndRemove_LargeObjectIsAddedToEnd()
     {
@@ -116,7 +117,7 @@ public class PartitionTests
         Assert.That(_objects.Keys, Has.Exactly(1).EqualTo(70)) ;
         Assert.That(_objects.Count, Is.EqualTo(3)) ;
     }
-    
+
     [Test]
     public void OnMultipleAddAndRemove_TooLargeObject_AddThrows()
     {
@@ -129,8 +130,8 @@ public class PartitionTests
         Assert.That(_objects.Keys, Has.Exactly(1).EqualTo(0)) ;
         _partition.Free(0) ;
         Assert.That(_objects.Keys, Has.None.EqualTo(0)) ;
-        Assert.That( () => _partition.Add(_obj5), Throws.InstanceOf<Exception>()) ;
-        
+        Assert.That(() => _partition.Add(_obj5), Throws.InstanceOf<Exception>()) ;
+
     }
 
     [Test]
@@ -142,7 +143,7 @@ public class PartitionTests
         _objects.Add(_lastAdded, _obj2) ;
         _partition.Add(_obj4) ;
         _objects.Add(_lastAdded, _obj4) ;
-        
+
         _partition.Clear() ;
         Assert.That(_objects.Count, Is.EqualTo(0)) ;
         Assert.That(_partition.FreeSpace, Is.EqualTo(100)) ;
@@ -151,7 +152,7 @@ public class PartitionTests
     [Test]
     public void OnStore_WithInvalidAdress_Throws()
     {
-        Assert.That( () => _partition.Store(_obj6, 101), Throws.InstanceOf<Exception>()) ;
+        Assert.That(() => _partition.Store(_obj6, 101), Throws.InstanceOf<Exception>()) ;
     }
 
     [Test]
@@ -167,7 +168,9 @@ public class PartitionTests
     {
         _partition.Store(_obj7, 10) ;
         _partition.Store(_obj2, 50) ;
-        Assert.That( () => _partition.Store(_obj1, 90), Throws.InstanceOf<Exception>().With.Message.EqualTo("Object of size=20 does not fit into partition at address=90.")) ;
+        Assert.That(() => _partition.Store(_obj1, 90),
+            Throws.InstanceOf<Exception>().With.Message
+                .EqualTo("Object of size=20 does not fit into partition at address=90.")) ;
     }
 
     [Test]
@@ -175,6 +178,64 @@ public class PartitionTests
     {
         _partition.Store(_obj7, 10) ;
         _partition.Store(_obj2, 50) ;
-        Assert.That( () => _partition.Store(_obj1, 35), Throws.InstanceOf<Exception>().With.Message.EqualTo("Overriding memory at address=35 with object of size=20.")) ; 
+        Assert.That(() => _partition.Store(_obj1, 35),
+            Throws.InstanceOf<Exception>().With.Message
+                .EqualTo("Overriding memory at address=35 with object of size=20.")) ;
     }
+
+    [Test]
+    public void AddedObject_CanBeDereferenced()
+    {
+        _partition.Add(_obj1) ;
+        _objects.Add(_lastAdded, _obj1) ;
+        _partition.Add(_obj2) ;
+        _objects.Add(_lastAdded, _obj2) ;
+        _partition.Add(_obj6) ;
+        _objects.Add(_lastAdded, _obj6) ;
+        _partition.Add(_obj4) ;
+        _objects.Add(_lastAdded, _obj4) ;
+        foreach (var (adress, item) in _objects)
+        {
+            CollectableObject? obj ;
+            Assert.That(_partition.TryDereference(adress, out obj), Is.EqualTo(true)) ;
+            Assert.That(obj, Is.EqualTo(item)) ;
+        }
+    }
+
+    [Test]
+    public void InexistantObjects_CannotBeDereferenced()
+    {
+        _partition.Add(_obj1) ;
+        _objects.Add(_lastAdded, _obj1) ;
+        _partition.Add(_obj2) ;
+        _objects.Add(_lastAdded, _obj2) ;
+        _partition.Add(_obj6) ;
+        _objects.Add(_lastAdded, _obj6) ;
+        _partition.Add(_obj4) ;
+        _objects.Add(_lastAdded, _obj4) ;
+        
+        CollectableObject? obj ;
+        Assert.That(_partition.TryDereference(47, out obj), Is.EqualTo(false)) ;
+        Assert.That(obj, Is.Null);
+    }
+    
+    [Test]
+    public void RemovedObjects_CannotBeDereferenced()
+    {
+        _partition.Add(_obj1) ;
+        _objects.Add(_lastAdded, _obj1) ;
+        _partition.Add(_obj2) ;
+        _objects.Add(_lastAdded, _obj2) ;
+        _partition.Add(_obj6) ;
+        _objects.Add(_lastAdded, _obj6) ;
+        _partition.Add(_obj4) ;
+        _objects.Add(_lastAdded, _obj4) ;
+        
+        _partition.Free(0) ;
+        
+        CollectableObject? obj ;
+        Assert.That(_partition.TryDereference(0, out obj), Is.EqualTo(false)) ;
+        Assert.That(obj, Is.Null);
+    }
+
 }
