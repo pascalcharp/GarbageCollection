@@ -33,23 +33,36 @@ namespace GarbageCollection.Collectors
             return false;
         }
 
+        private CollectableObject GetObjectFromAddress(int current)
+        {
+            if (!_memory.TryDereference(current, out CollectableObject? obj))
+            {
+                throw new Exception($"Unable to dereference {current} in GetObjectFromAddress.") ;
+            }
+            return obj ;
+        }
+
+        private void FreeMemory()
+        {
+            foreach (var r in _free)
+            {
+               _memory.Free(r) ; 
+            }
+            _free.Clear() ;
+        }
+
         public void Collect()
         {
            HashSet<int> unscanned = new HashSet<int>(_unreached); ;
            HashSet<int> scanned  = new HashSet<int>() ;
+           
            while (unscanned.Count > 0)
            {
                var current = unscanned.First() ;
                unscanned.Remove(current) ;
                scanned.Add(current) ;
-
-               CollectableObject? obj = null ; 
-               if (!_memory.TryDereference(current, out obj))
-               {
-                   throw new Exception($"Unable to dereference {current}") ;
-               }
-
-               foreach (var r in obj.References)
+               
+               foreach (var r in GetObjectFromAddress(current).References)
                {
                    if (_unreached.Contains(r))
                    {
@@ -60,6 +73,7 @@ namespace GarbageCollection.Collectors
            }
            _free.UnionWith(_unreached) ;
            _unreached  = scanned ;
+           FreeMemory() ;
         }
     }
 }
