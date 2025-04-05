@@ -22,8 +22,8 @@ namespace GarbageCollection.Collectors
         {
             _memory = memory;
             _mutator = mutator;
-        
-            
+            _free = new HashSet<int>() ;
+            _unreached  = new HashSet<int>(memory.RootReferences) ;
         }
 
         public bool ShouldCollect()
