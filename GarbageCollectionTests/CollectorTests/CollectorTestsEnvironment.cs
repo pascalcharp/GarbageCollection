@@ -1,11 +1,11 @@
 using GarbageCollection ;
 using GarbageCollection.Collectors ;
 
-namespace GarbageCollectionTests ;
+namespace GarbageCollectionTests.CollectorTests ;
 
 public class CollectorTestsEnvironment
 {
-    protected BakerCollector _collector ;
+    protected IGarbageCollector _collector ;
     protected EnvironmentMemory _memory ;
     protected Mutator _mutator ;
     protected CollectableObject A, B, C, D, E, F, G, H ;
@@ -43,13 +43,13 @@ public class CollectorTestsEnvironment
         _memory.AddRootReferences(destinations) ;
     }
     
-    public void Setup()
+    public void Setup(String type)
     {
         _mutator = new Mutator() ;
         _mutator.Added += OnAdded ;
         _mutator.Released += OnRelease ;
         _memory = new EnvironmentMemory(500, 1, _mutator) ;
-        _collector = new BakerCollector(_memory, _mutator) ;
+        _collector = CollectorFactory.GetInstance(type, _memory, _mutator) ; 
 
         A = new CollectableObject("A", 10, _mutator) ; 
         B = new CollectableObject("B", 20, _mutator) ;

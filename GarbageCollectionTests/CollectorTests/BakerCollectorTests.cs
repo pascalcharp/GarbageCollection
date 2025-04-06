@@ -1,11 +1,14 @@
+using System.Runtime.InteropServices.ComTypes ;
+using GarbageCollection.Collectors ;
+
 namespace GarbageCollectionTests.CollectorTests ;
 
 public class BakerCollectorTests : CollectorTestsEnvironment
 {
     [SetUp]
-    public new void Setup()
+    public void Setup()
     {
-        base.Setup() ;
+        base.Setup("Baker") ;
 
         AddReferencesFromObjectTo(B, [A, G]) ;
         AddReferencesFromObjectTo(C, [G]) ;
@@ -31,9 +34,9 @@ public class BakerCollectorTests : CollectorTestsEnvironment
 public class BakerCollectorTestsCase2 : CollectorTestsEnvironment
 {
     [SetUp]
-    public new void Setup()
+    public void Setup()
     {
-        base.Setup() ;
+        base.Setup("Baker") ;
         AddReferencesFromObjectTo(A, [F]) ;
         AddReferencesFromObjectTo(C, [A, F]) ;
         AddReferencesFromObjectTo(E, [F]) ;
@@ -59,9 +62,9 @@ public class BakerCollectorTestsCase2 : CollectorTestsEnvironment
 public class BakerCollectorTestsCase3 : CollectorTestsEnvironment
 {
     [SetUp]
-    public new void Setup()
+    public void Setup()
     {
-        base.Setup() ;
+        base.Setup("Baker") ;
         AddReferencesFromObjectTo(A, [E, F]) ;
         AddReferencesFromObjectTo(B, [C]) ;
         AddReferencesFromObjectTo(C, [D]) ;
