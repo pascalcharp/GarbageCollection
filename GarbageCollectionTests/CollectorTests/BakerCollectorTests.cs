@@ -1,6 +1,6 @@
 namespace GarbageCollectionTests.CollectorTests ;
 
-public class BakerCollectorTestsCase1 : CollectorTestsEnvironment
+public class BakerCollectorTests : CollectorTestsEnvironment
 {
     [SetUp]
     public new void Setup()
@@ -19,10 +19,12 @@ public class BakerCollectorTestsCase1 : CollectorTestsEnvironment
     [Test]
     public void Collect_ShouldFree_Objects_E_F()
     {
+        int previousMemoryUsed = _memory.GetTotalUsedSpace() ; 
         _collector.Collect() ;
         Assert.That(_released, Has.Count.EqualTo(2)) ;
         Assert.That(_released, Has.Exactly(1).EqualTo(E)) ;
         Assert.That(_released, Has.Exactly(1).EqualTo(F)) ;
+        Assert.That(_memory.GetTotalUsedSpace(), Is.EqualTo(previousMemoryUsed - E.Size - F.Size)) ;
     }
 }
 
@@ -51,5 +53,29 @@ public class BakerCollectorTestsCase2 : CollectorTestsEnvironment
         Assert.That(_released, Has.Exactly(1).EqualTo(E)) ;
         Assert.That(_released, Has.Exactly(1).EqualTo(G)) ;
         Assert.That(_released, Has.Exactly(1).EqualTo(H)) ;
+    }
+}
+
+public class BakerCollectorTestsCase3 : CollectorTestsEnvironment
+{
+    [SetUp]
+    public new void Setup()
+    {
+        base.Setup() ;
+        AddReferencesFromObjectTo(A, [E, F]) ;
+        AddReferencesFromObjectTo(B, [C]) ;
+        AddReferencesFromObjectTo(C, [D]) ;
+        AddReferencesFromObjectTo(D, [H]) ;
+        AddReferencesFromObjectTo(G, [B, C, D, F, H]) ;
+        
+        AddRootReferencesToMemory([A, B, D]) ;
+    }
+
+    [Test]
+    public void Collect_ShouldFree_Objects_G()
+    {
+        _collector.Collect() ;
+        Assert.That(_released, Has.Count.EqualTo(1)) ;
+        Assert.That(_released, Has.Exactly(1).EqualTo(G)) ;
     }
 }

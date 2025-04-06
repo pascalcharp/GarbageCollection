@@ -29,6 +29,7 @@ namespace GarbageCollection
             }
 
             _mutator = mutator;
+            _mutator.Moved += OnMoved ; 
 
             // Compute true capacity.
             _partitionSize = capacity / nbPartitions;
@@ -45,6 +46,11 @@ namespace GarbageCollection
 
             WorkingPartition = Partitions[0];
             RootReferences = [];
+        }
+
+        private void OnMoved(int previous, int next)
+        {
+            UpdateRootReference(previous, next) ;
         }
 
         public bool TryDereference(int address, [NotNullWhen(true)] out CollectableObject? referencedObject)

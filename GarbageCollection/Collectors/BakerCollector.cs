@@ -11,13 +11,13 @@ namespace GarbageCollection.Collectors
         public string Name => "Baker" ;
         public static int NbPartitions => 1 ;
 
-        private readonly EnvironmentMemory _memory ;
-        private Mutator _mutator ;
+        protected readonly EnvironmentMemory _memory ;
+        protected readonly Mutator _mutator ;
 
-        private HashSet<int> _free ;
-        private HashSet<int> _unreached ;
+        protected HashSet<int> _free ;
+        protected HashSet<int> _unreached ;
 
-        private void OnAdded(int address)
+        protected void OnAdded(int address)
         {
             _unreached.Add(address) ;
         }
@@ -39,7 +39,7 @@ namespace GarbageCollection.Collectors
             return false ;
         }
 
-        private HashSet<int> BuildUnscanned()
+        protected HashSet<int> BuildUnscanned()
         {
             HashSet<int> unscanned = new HashSet<int>() ;
             foreach (var r in _memory.RootReferences)
@@ -51,7 +51,7 @@ namespace GarbageCollection.Collectors
             return unscanned ;
         }
 
-        private CollectableObject GetObjectFromAddress(int current)
+        protected CollectableObject GetObjectFromAddress(int current)
         {
             if (!_memory.TryDereference(current, out CollectableObject? obj))
             {
@@ -61,7 +61,7 @@ namespace GarbageCollection.Collectors
             return obj ;
         }
 
-        private void ReleaseMemory()
+        protected void ReleaseMemory()
         {
             foreach (var r in _free)
             {
@@ -71,7 +71,7 @@ namespace GarbageCollection.Collectors
             _free.Clear() ;
         }
 
-        public void Collect()
+        protected HashSet<int> Scan()
         {
             var unscanned = BuildUnscanned() ;
             HashSet<int> scanned = new HashSet<int>() ;
@@ -90,8 +90,13 @@ namespace GarbageCollection.Collectors
                         unscanned.Add(r) ;
                     }
                 }
-            }
+            } 
+            return scanned ;
+        }
 
+        public void Collect()
+        {
+            HashSet<int> scanned = Scan() ;
             _free.UnionWith(_unreached) ;
             _unreached = new HashSet<int>(scanned) ;
             ReleaseMemory() ;
