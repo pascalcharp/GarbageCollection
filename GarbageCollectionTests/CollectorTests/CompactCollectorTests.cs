@@ -19,7 +19,7 @@ public class CompactCollectorTestsCase1 : CollectorTestsEnvironment
     [Test]
     public void Collect_ShouldFreeObjects_EF_AndMoveObjects_GH()
     {
-        
+        _collector.Collect() ;
     }
     
 }
