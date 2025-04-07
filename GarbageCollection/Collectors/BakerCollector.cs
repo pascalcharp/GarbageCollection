@@ -11,25 +11,25 @@ namespace GarbageCollection.Collectors
         public string Name => "Baker" ;
         public static int NbPartitions => 1 ;
 
-        protected readonly EnvironmentMemory _memory ;
-        protected readonly Mutator _mutator ;
+        protected readonly EnvironmentMemory Memory ;
+        protected readonly Mutator Mutator ;
 
-        protected HashSet<int> _free ;
-        protected HashSet<int> _unreached ;
+        protected HashSet<int> Release ;
+        protected HashSet<int> Unreached ;
 
         protected void OnAdded(int address)
         {
-            _unreached.Add(address) ;
+            Unreached.Add(address) ;
         }
 
         public BakerCollector(EnvironmentMemory memory, Mutator mutator)
         {
-            _memory = memory ;
-            _mutator = mutator ;
-            _mutator.Added += OnAdded ;
+            Memory = memory ;
+            Mutator = mutator ;
+            Mutator.Added += OnAdded ;
 
-            _unreached = new HashSet<int>() ;
-            _free = new HashSet<int>() ;
+            Unreached = new HashSet<int>() ;
+            Release = new HashSet<int>() ;
         }
 
         public bool ShouldCollect()
@@ -42,9 +42,9 @@ namespace GarbageCollection.Collectors
         protected HashSet<int> BuildUnscanned()
         {
             HashSet<int> unscanned = new HashSet<int>() ;
-            foreach (var r in _memory.RootReferences)
+            foreach (var r in Memory.RootReferences)
             {
-                _unreached.Remove(r) ;
+                Unreached.Remove(r) ;
                 unscanned.Add(r) ;
             }
 
@@ -53,7 +53,7 @@ namespace GarbageCollection.Collectors
 
         protected CollectableObject GetObjectFromAddress(int current)
         {
-            if (!_memory.TryDereference(current, out CollectableObject? obj))
+            if (!Memory.TryDereference(current, out CollectableObject? obj))
             {
                 throw new Exception($"Unable to dereference {current} in GetObjectFromAddress.") ;
             }
@@ -63,12 +63,12 @@ namespace GarbageCollection.Collectors
 
         protected void ReleaseMemory()
         {
-            foreach (var r in _free)
+            foreach (var r in Release)
             {
-                _memory.Free(r) ;
+                Memory.Free(r) ;
             }
 
-            _free.Clear() ;
+            Release.Clear() ;
         }
 
         protected HashSet<int> Scan()
@@ -84,9 +84,9 @@ namespace GarbageCollection.Collectors
 
                 foreach (var r in GetObjectFromAddress(current).References)
                 {
-                    if (_unreached.Contains(r))
+                    if (Unreached.Contains(r))
                     {
-                        _unreached.Remove(r) ;
+                        Unreached.Remove(r) ;
                         unscanned.Add(r) ;
                     }
                 }
@@ -94,11 +94,11 @@ namespace GarbageCollection.Collectors
             return scanned ;
         }
 
-        public void Collect()
+        public virtual void Collect()
         {
             HashSet<int> scanned = Scan() ;
-            _free.UnionWith(_unreached) ;
-            _unreached = new HashSet<int>(scanned) ;
+            Release.UnionWith(Unreached) ;
+            Unreached = new HashSet<int>(scanned) ;
             ReleaseMemory() ;
         }
     }

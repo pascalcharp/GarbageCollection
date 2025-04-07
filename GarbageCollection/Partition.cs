@@ -32,6 +32,16 @@ namespace GarbageCollection
             _objects = [];
         }
 
+        public int GetObjectAddress(CollectableObject obj)
+        {
+            foreach (var o in _objects)
+            {
+                if (o.Value == obj) return o.Key;
+            }
+
+            return -1 ; 
+        }
+
         public bool TryDereference(int address, [NotNullWhen(true)] out CollectableObject? referencedObject)
         {
             ValidateAddress(address);
@@ -79,7 +89,7 @@ namespace GarbageCollection
                 throw new OutOfSpaceException($"Not enough space left to add object name={newObject.Name} into partition.");
             }
         }
-
+        
         public void Store(CollectableObject existingObject, int address)
         {
             ValidateAddress(address);

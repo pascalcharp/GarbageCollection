@@ -14,6 +14,11 @@ namespace GarbageCollection
 
         private readonly Mutator _mutator;
 
+        void Onrelease(int address)
+        {
+            
+        }
+
         public CollectableObject(string name, int size, Mutator mutator)
         {
             if (size <= 0)
@@ -26,18 +31,7 @@ namespace GarbageCollection
             References = [];
 
             _mutator = mutator;
-            _mutator.Moved += OnMoved ; 
-        }
 
-        private void OnMoved(int previous, int next)
-        {
-            foreach (var t in References)
-            {
-                if (t == previous)
-                {
-                    UpdateReference(previous, next) ;
-                }
-            }
         }
 
         public void AddReferences(List<int> newReferences)
