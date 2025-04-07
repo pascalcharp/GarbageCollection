@@ -36,7 +36,7 @@ namespace GarbageCollection
         {
             foreach (var o in _objects)
             {
-                if (o.Value == obj) return o.Key;
+                if (o.Value == obj) return o.Key + StartAddress ;
             }
 
             return -1 ; 

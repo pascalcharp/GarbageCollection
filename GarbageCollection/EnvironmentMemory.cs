@@ -47,11 +47,6 @@ namespace GarbageCollection
             RootReferences = [];
         }
 
-        private void OnMoved(int previous, int next)
-        {
-            if (RootReferences.Contains(previous)) UpdateRootReference(previous, next) ;
-        }
-
         public int GetObjectAddress(CollectableObject obj)
         {
             foreach (var partition in Partitions)

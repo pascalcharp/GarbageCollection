@@ -58,6 +58,8 @@ namespace GarbageCollection.Collectors
                     Unreached.Remove(oldAddress) ;
                     Memory.Store(obj, newAdress) ;
                     Unreached.Add(newAdress) ;
+                    
+                    if (Memory.RootReferences.Contains(oldAddress)) Memory.UpdateRootReference(oldAddress, newAdress) ;
                 }
                 else
                 {
