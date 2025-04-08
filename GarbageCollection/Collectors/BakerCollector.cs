@@ -10,7 +10,7 @@ namespace GarbageCollection.Collectors
     {
         public virtual string Name => "Baker" ;
         public static int NbPartitions => 1 ;
-        public const double CriticalRatio = 0.25 ;
+        public const double CriticalRatio = 0.50 ;
 
         protected readonly EnvironmentMemory Memory ;
         protected readonly Mutator Mutator ;
@@ -35,6 +35,7 @@ namespace GarbageCollection.Collectors
 
         public virtual bool ShouldCollect()
         {
+            
             double freeSpace = Memory.WorkingPartition.FreeSpace ;
             double totalSpace = Memory.WorkingPartition.Size ; 
             var ratio = freeSpace / totalSpace ; 

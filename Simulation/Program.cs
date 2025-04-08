@@ -13,7 +13,7 @@ namespace Simulation
         static void Main(string[] args)
         {
             // Whether to show collection statistics or not.
-            const bool DEBUG = true;
+            const bool DEBUG = false ;
 
             // Define scenarios and collectors to simulate.
             List<Func<EnvironmentMemory, IGarbageCollector, Mutator, Scenario>> factoryMethods = [
@@ -54,8 +54,11 @@ namespace Simulation
                         Utils.WritePercentage("Used capacity", usedSpace, scenario.Memory.Capacity);
                         Console.WriteLine();
                         Console.WriteLine($"Total pause cost : {results.PauseCost}");
+                        Utils.WritePercentage("Fragmentation per object", results.FragmentatedSpace, scenario.ReachableObjects.Count);
                         Utils.WritePercentage("Fragmented space", results.FragmentatedSpace, scenario.Memory.Capacity);
+                        Utils.WritePercentage("Locality distance", results.LocalityDistance, scenario.ReachableObjects.Count);
                         Utils.WritePercentage("Locality distance", results.LocalityDistance, scenario.Memory.Capacity);
+                        
                     }
                     Console.WriteLine();
                     Console.WriteLine();

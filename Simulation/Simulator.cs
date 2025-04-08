@@ -9,7 +9,7 @@ namespace Simulation
 {
     internal record SimulationResults
     {
-        public required int PauseCost;
+        public required float PauseCost;
         public required int FragmentatedSpace;
         public required int LocalityDistance;
     }
@@ -73,6 +73,7 @@ namespace Simulation
                     }
                     
                     _scenario.Collector.Collect();
+                    _scenario.Sync() ;
 
                     if (debug)
                     {
@@ -132,7 +133,8 @@ namespace Simulation
             }
 
             // Compute distance.
-            int distance = _scenario.Memory.RootReferences.Sum();
+            //int distance = _scenario.Memory.RootReferences.Sum();
+            int distance = 0 ; 
             foreach (KeyValuePair<int, CollectableObject> pair in _scenario.ReachableObjects)
             {
                 foreach (int reference in pair.Value.References)
@@ -144,9 +146,9 @@ namespace Simulation
             // Create results.
             return new SimulationResults()
             {
-                PauseCost = _totalCost,
-                FragmentatedSpace = fragmentation,
-                LocalityDistance = distance,
+                PauseCost =  _totalCost / (float) _scenario.Ticks,
+                FragmentatedSpace = fragmentation ,
+                LocalityDistance = distance ,
             };
         }
 
@@ -165,12 +167,12 @@ namespace Simulation
 
         private void StoreObject(CollectableObject existingObject)
         {
-            _totalCost += STORE_COST;
+            _totalCost += STORE_COST * existingObject.Size ;
         }
 
         private void ReleaseObject(CollectableObject releasedObject)
         {
-            _totalCost += RELEASE_COST;
+            _totalCost += RELEASE_COST * releasedObject.Size ;
         }
 
         private void UpdateReference()

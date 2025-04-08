@@ -10,6 +10,7 @@ namespace GarbageCollection.Collectors
     {
         public string Name => "Cheney" ;
         public static int NbPartitions => 2 ;
+        public const double CriticalRatio = 0.75 ; 
 
         private readonly EnvironmentMemory _memory ;
         private int _workingPartitionIndex ;
@@ -67,9 +68,11 @@ namespace GarbageCollection.Collectors
 
         public bool ShouldCollect()
         {
-            /* ------- À COMPLÉTER ------- */
+            double freeSpace = _memory.WorkingPartition.FreeSpace ;
+               double totalSpace = _memory.WorkingPartition.Size ; 
+               var ratio = freeSpace / totalSpace ; 
 
-            return false ;
+               return ratio < CriticalRatio ;
         }
 
         public void Collect()
@@ -96,14 +99,8 @@ namespace GarbageCollection.Collectors
             }
 
             _objects.Clear() ;
-            foreach (var (oldLoc, newLoc) in newLocation)
-            {
-                if (newLoc != -1)
-                {
-                    _objects.Add(newLoc) ;
-                }
-                _memory.Free(oldLoc) ;
-            }
+            foreach (var (prev, next) in newLocation) if (next != -1) _objects.Add(next) ;
+            _memory.WorkingPartition.Clear() ;
             TogglePartitions() ;
         }
     }
