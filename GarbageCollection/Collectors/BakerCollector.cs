@@ -8,8 +8,9 @@ namespace GarbageCollection.Collectors
 {
     public class BakerCollector : IGarbageCollector
     {
-        public string Name => "Baker" ;
+        public virtual string Name => "Baker" ;
         public static int NbPartitions => 1 ;
+        public const double CriticalRatio = 0.25 ;
 
         protected readonly EnvironmentMemory Memory ;
         protected readonly Mutator Mutator ;
@@ -32,11 +33,13 @@ namespace GarbageCollection.Collectors
             Release = new HashSet<int>() ;
         }
 
-        public bool ShouldCollect()
+        public virtual bool ShouldCollect()
         {
-            /* ------- À COMPLÉTER ------- */
+            double freeSpace = Memory.WorkingPartition.FreeSpace ;
+            double totalSpace = Memory.WorkingPartition.Size ; 
+            var ratio = freeSpace / totalSpace ; 
 
-            return false ;
+            return ratio < CriticalRatio ;
         }
 
         protected HashSet<int> BuildUnscanned()

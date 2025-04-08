@@ -8,15 +8,10 @@ namespace GarbageCollection.Collectors
 {
     public class CompactCollector(EnvironmentMemory memory, Mutator mutator) : BakerCollector(memory, mutator)
     {
-        public new string Name => "Compact" ;
+        public override string Name => "Compact" ;
+        public new static int NbPartitions => 1 ; 
 
-
-        public new bool ShouldCollect()
-        {
-            /* ------- À COMPLÉTER ------- */
-
-            return false ;
-        }
+        
 
         private SortedDictionary<int, int> BuildNewLocation()
         {

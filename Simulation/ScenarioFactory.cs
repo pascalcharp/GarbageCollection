@@ -13,7 +13,7 @@ namespace Simulation
         public const int SEED = 42;
 
         public const int MEMORY_CAPACITY = 8192;
-        public const int SIZE_FACTOR = 4;
+        public const int SIZE_FACTOR = 4 ;
 
         public static EnvironmentMemory CreateMemory(int nbPartitions, Mutator mutator)
         {
@@ -27,24 +27,24 @@ namespace Simulation
             string name = $"{collector.Name} (A)";
             GenerationData data = new()
             {
-                NbTicks = 500,
+                NbTicks = 1000,
                 Generator = new(SEED),
 
-                MinSize = 2,
-                SizeProbabilities = [0.1, 0.2, 0.4, 0.2, 0.1],
-                SizeFactor = SIZE_FACTOR,
+                MinSize = 1,
+                SizeProbabilities = [1.0],
+                SizeFactor = 100,
 
                 MinOldRoot = 0,
-                OldRootProbabilities = [1.0],
+                OldRootProbabilities = [0.3333333, 0.3333333, 0.3333333],
 
                 MinNewRoot = 0,
                 NewRootProbabilities = [0.5, 0.5],
 
-                MinOldPerObject = 1,
-                OldPerObjectProbabilities = [0.5, 0.5],
+                MinOldPerObject = 0,
+                OldPerObjectProbabilities = [1.0],
 
                 MinNewPerObject = 0,
-                NewPerObjectProbabilities = [0.5, 0.4, 0.1],
+                NewPerObjectProbabilities = [1.0],
             };
 
             return new(name, memory, collector, mutator, data);
