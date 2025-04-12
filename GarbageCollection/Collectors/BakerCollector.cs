@@ -10,7 +10,7 @@ namespace GarbageCollection.Collectors
     {
         public virtual string Name => "Baker" ;
         public static int NbPartitions => 1 ;
-        public const double CriticalRatio = 0.50 ;
+        public const double CriticalRatio = 0.75 ;
 
         protected readonly EnvironmentMemory Memory ;
         protected readonly Mutator Mutator ;

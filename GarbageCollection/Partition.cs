@@ -157,7 +157,12 @@ namespace GarbageCollection
             {
                 foreach (var (adresse, obj) in _objects)
                 {
-                    objectsString += adresse + ":  <" + obj.Name + ", " + obj.Size + ">\n" ;
+                    objectsString += adresse + ":  <" + obj.Name + ", " + obj.Size + "> refs: [" ;
+                    foreach (var rf in obj.References)
+                    {
+                        objectsString += rf + ", ";
+                    }
+                    objectsString += "]\n";
                 }
             }
             else objectsString += "Vide\n";

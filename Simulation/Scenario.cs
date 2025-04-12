@@ -69,6 +69,16 @@ namespace Simulation
             }
         }
 
+        public String ReachableObjectsToString()
+        {
+            String result = "" ;
+            foreach (var obj in ReachableObjects)
+            {
+                result += $"Adress: {obj.Key} Name: {obj.Value.Name} Refs: {obj.Value.References.Count}\n" ;
+            }
+            return result ;
+        }
+
         public CollectableObject GetNewObject()
         {
             _nbObjects++;

@@ -18,8 +18,8 @@ namespace Simulation
             // Define scenarios and collectors to simulate.
             List<Func<EnvironmentMemory, IGarbageCollector, Mutator, Scenario>> factoryMethods = [
                 ScenarioFactory.CreateScenarioA,
-                ScenarioFactory.CreateScenarioB,
-                ScenarioFactory.CreateScenarioC,
+                //ScenarioFactory.CreateScenarioB,
+                //ScenarioFactory.CreateScenarioC,
             ];
             List<Type> types = [
                 typeof(BakerCollector),
@@ -36,6 +36,7 @@ namespace Simulation
                     Mutator mutator = new();
                     int nbPartitions = (int?)type.GetProperty("NbPartitions")?.GetValue(null) ?? throw new Exception($"Unexpected error.");
                     EnvironmentMemory memory = ScenarioFactory.CreateMemory(nbPartitions, mutator);
+                    Console.WriteLine($"Memory created with {nbPartitions} partitions") ;
                     IGarbageCollector collector = (IGarbageCollector?)Activator.CreateInstance(type, [memory, mutator]) ?? throw new Exception($"Unexpected error.");
                     Scenario scenario = factoryMethod(memory, collector, mutator);
                     Simulator simulator = new(scenario);
@@ -47,17 +48,13 @@ namespace Simulation
                     // Evaluate.
                     if (success)
                     {
-                        SimulationResults results = simulator.Evaluate();
+                       
                         Console.WriteLine();
                         Console.WriteLine($"Simulation completed after tick={scenario.Ticks}.");
                         int usedSpace = scenario.Memory.GetTotalUsedSpace();
                         Utils.WritePercentage("Used capacity", usedSpace, scenario.Memory.Capacity);
                         Console.WriteLine();
-                        Console.WriteLine($"Total pause cost : {results.PauseCost}");
-                        Utils.WritePercentage("Fragmentation per object", results.FragmentatedSpace, scenario.ReachableObjects.Count);
-                        Utils.WritePercentage("Fragmented space", results.FragmentatedSpace, scenario.Memory.Capacity);
-                        Utils.WritePercentage("Locality distance", results.LocalityDistance, scenario.ReachableObjects.Count);
-                        Utils.WritePercentage("Locality distance", results.LocalityDistance, scenario.Memory.Capacity);
+                        simulator.DisplaySimulationStatistics();
                         
                     }
                     Console.WriteLine();
