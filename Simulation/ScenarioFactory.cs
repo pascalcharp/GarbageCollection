@@ -22,29 +22,27 @@ namespace Simulation
 
         public static Scenario CreateScenarioA(EnvironmentMemory memory, IGarbageCollector collector, Mutator mutator)
         {
-            /* ------- À COMPLÉTER ------- */
-
             string name = $"{collector.Name} (A)";
             GenerationData data = new()
             {
-                NbTicks = 40,
+                NbTicks = 500,
                 Generator = new(SEED),
 
                 MinSize = 1,
-                SizeProbabilities = [0.6, 0.3, 0.1],
+                SizeProbabilities = [1.0],
                 SizeFactor = 100,
 
                 MinOldRoot = 0,
                 OldRootProbabilities = [0.25, 0.5, 0.15, 0.1],
 
                 MinNewRoot = 0,
-                NewRootProbabilities = [0.75, 0.15, 0.1 ],
+                NewRootProbabilities = [0.9, 0.1],
 
-                MinOldPerObject = 0,
+                MinOldPerObject = 1,
                 OldPerObjectProbabilities = [0.3, 0.2, 0.1, 0.1, 0.1, 0.1, 0.1],
 
                 MinNewPerObject = 0,
-                NewPerObjectProbabilities = [0.3, 0.2, 0.1, 0.1, 0.1, 0.1, 0.1],
+                NewPerObjectProbabilities = [0.4, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1],
             };
 
             return new(name, memory, collector, mutator, data);
@@ -52,29 +50,27 @@ namespace Simulation
 
         public static Scenario CreateScenarioB(EnvironmentMemory memory, IGarbageCollector collector, Mutator mutator)
         {
-            /* ------- À COMPLÉTER ------- */
-
             string name = $"{collector.Name} (B)";
             GenerationData data = new()
             {
                 NbTicks = 500,
                 Generator = new(SEED),
 
-                MinSize = 1,
-                SizeProbabilities = [0.4, 0.3, 0.2, 0.1],
+                MinSize = 2,
+                SizeProbabilities = [1.0],
                 SizeFactor = SIZE_FACTOR,
 
                 MinOldRoot = 0,
-                OldRootProbabilities = [0.1, 0.1, 0.8],
+                OldRootProbabilities = [0.4, 0.5, 0.1],
 
                 MinNewRoot = 0,
-                NewRootProbabilities = [0.25, 0.5, 0.25],
+                NewRootProbabilities = [0.5, 0.5],
 
                 MinOldPerObject = 0,
-                OldPerObjectProbabilities = [0.3, 0.2, 0.1, 0.1, 0.1, 0.1, 0.1],
+                OldPerObjectProbabilities = [1.0],
 
-                MinNewPerObject = 1,
-                NewPerObjectProbabilities = [0.1, 0.2, 0.3, 0.2, 0.1, 0.1],
+                MinNewPerObject = 0,
+                NewPerObjectProbabilities = [1.0],
             };
 
             return new(name, memory, collector, mutator, data);
@@ -82,7 +78,6 @@ namespace Simulation
 
         public static Scenario CreateScenarioC(EnvironmentMemory memory, IGarbageCollector collector, Mutator mutator)
         {
-            /* ------- À COMPLÉTER ------- */
 
             string name = $"{collector.Name} (C)";
             GenerationData data = new()

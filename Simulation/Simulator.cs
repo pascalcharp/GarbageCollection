@@ -80,8 +80,6 @@ namespace Simulation
 
                     _scenario.Collector.Collect() ;
                     _scenario.Sync() ;
-                    
-                    foreach (var r in _scenario.Memory.RootReferences) Console.WriteLine(r) ;
 
                     if (debug)
                     {
@@ -150,6 +148,7 @@ namespace Simulation
                 pauses.Add(result.PauseCost ) ;
                 localities.Add(result.LocalityDistance) ;
             }
+            Console.WriteLine($"Total work by collector: {_totalCost}");
             Console.WriteLine($"Average pause per tick: {pauses.Average()}") ;
             Console.WriteLine($"Average locality per tick: {localities.Average()}") ;
             Console.WriteLine($"Average frag per tick: {frag.Average()}") ;
