@@ -17,9 +17,9 @@ namespace Simulation
 
             // Define scenarios and collectors to simulate.
             List<Func<EnvironmentMemory, IGarbageCollector, Mutator, Scenario>> factoryMethods = [
-                //ScenarioFactory.CreateScenarioA,
+                ScenarioFactory.CreateScenarioA,
                 ScenarioFactory.CreateScenarioB,
-                //ScenarioFactory.CreateScenarioC,
+                ScenarioFactory.CreateScenarioC,
             ];
             List<Type> types = [
                 typeof(BakerCollector),

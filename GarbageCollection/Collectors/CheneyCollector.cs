@@ -10,7 +10,7 @@ namespace GarbageCollection.Collectors
     {
         public string Name => "Cheney" ;
         public static int NbPartitions => 2 ;
-        public const double CriticalRatio = 0.75 ; 
+        public const double CriticalRatio = 0.50 ; 
 
         private readonly EnvironmentMemory _memory ;
         private int _workingPartitionIndex ;

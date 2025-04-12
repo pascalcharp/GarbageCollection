@@ -20,9 +20,9 @@ namespace Simulation
             return new(MEMORY_CAPACITY, nbPartitions, mutator);
         }
 
-        public static Scenario CreateScenarioA(EnvironmentMemory memory, IGarbageCollector collector, Mutator mutator)
+        public static Scenario CreateScenarioC(EnvironmentMemory memory, IGarbageCollector collector, Mutator mutator)
         {
-            string name = $"{collector.Name} (A)";
+            string name = $"{collector.Name} (C)";
             GenerationData data = new()
             {
                 NbTicks = 500,
@@ -76,24 +76,24 @@ namespace Simulation
             return new(name, memory, collector, mutator, data);
         }
 
-        public static Scenario CreateScenarioC(EnvironmentMemory memory, IGarbageCollector collector, Mutator mutator)
+        public static Scenario CreateScenarioA(EnvironmentMemory memory, IGarbageCollector collector, Mutator mutator)
         {
 
-            string name = $"{collector.Name} (C)";
+            string name = $"{collector.Name} (A)";
             GenerationData data = new()
             {
                 NbTicks = 100,
                 Generator = new(SEED),
 
-                MinSize = 1,
+                MinSize = 10,
                 SizeProbabilities = [1.0],
                 SizeFactor = SIZE_FACTOR,
 
-                MinOldRoot = 0,
+                MinOldRoot = 1,
                 OldRootProbabilities = [1.0],
 
                 MinNewRoot = 0,
-                NewRootProbabilities = [1.0],
+                NewRootProbabilities = [0.5, 0.5],
 
                 MinOldPerObject = 0,
                 OldPerObjectProbabilities = [1.0],
