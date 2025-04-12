@@ -27,7 +27,7 @@ namespace Simulation
             string name = $"{collector.Name} (A)";
             GenerationData data = new()
             {
-                NbTicks = 30,
+                NbTicks = 40,
                 Generator = new(SEED),
 
                 MinSize = 1,

@@ -68,9 +68,7 @@ namespace Simulation
                 UpdateSimulationResults() ;
 
                 // Collect if needed.
-                // Collect every 4 objects
-                //if (_scenario.Collector.ShouldCollect())
-                if (i % 4 == 3)
+                if (_scenario.Collector.ShouldCollect())
                 {
                     if (debug)
                     {
