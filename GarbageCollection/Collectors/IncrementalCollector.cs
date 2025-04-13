@@ -2,7 +2,7 @@ namespace GarbageCollection.Collectors ;
 
 public class IncrementalCollector : IGarbageCollector
 {
-    private static int _quantum = 20 ;
+    private static int _quantum = 4 ;
     public String Name { get ; } = "Incremental" ;
     public static int NbPartitions  => 1 ; 
 
