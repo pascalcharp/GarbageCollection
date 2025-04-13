@@ -26,6 +26,7 @@ namespace Simulation
 
         private readonly HashSet<CollectableObject> _addedObjects ;
         private int _totalCost ;
+        private int _collectionNumber ;
 
         public List<SimulationResults>  Results { get ; private set ; } 
 
@@ -36,6 +37,7 @@ namespace Simulation
 
             _addedObjects = [] ;
             _totalCost = 0 ;
+            _collectionNumber = 0 ;
 
             Results = [] ;  
 
@@ -70,6 +72,7 @@ namespace Simulation
                 // Collect if needed.
                 if (_scenario.Collector.ShouldCollect())
                 {
+                    ++_collectionNumber ;
                     if (debug)
                     {
                         Console.WriteLine() ;
@@ -150,8 +153,9 @@ namespace Simulation
             }
             Console.WriteLine($"Total work by collector: {_totalCost}");
             Console.WriteLine($"Average pause per tick: {pauses.Average()}") ;
-            Console.WriteLine($"Average locality per tick: {localities.Average()}") ;
-            Console.WriteLine($"Average frag per tick: {frag.Average()}") ;
+            Console.WriteLine($"Average pause per collection: {_totalCost / (float) _collectionNumber}") ;
+            Console.WriteLine($"Average locality per tick: {Math.Round(100 * localities.Average()/_scenario.Memory.Capacity, 2)}") ;
+            Console.WriteLine($"Average frag per tick: {Math.Round(100.0 * frag.Average()/_scenario.Memory.Capacity, 2)}") ;
         }
 
         public SimulationResults Evaluate()

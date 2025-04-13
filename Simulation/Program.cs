@@ -25,6 +25,7 @@ namespace Simulation
                 typeof(BakerCollector),
                 typeof(CompactCollector),
                 typeof(CheneyCollector),
+                typeof(IncrementalCollector),
             ];
 
             // Run simulations.

@@ -12,6 +12,7 @@ namespace GarbageCollection
         public event Action<CollectableObject>? Stored;
         public event Action<CollectableObject>? Released;
         public event Action? ReferenceUpdated;
+        public event Action<CollectableObject, int>? ReferenceAdded ;
 
         public void PostProcessAdd(int address)
         {
@@ -31,6 +32,11 @@ namespace GarbageCollection
         public void PostProcessUpdateReference()
         {
             ReferenceUpdated?.Invoke();
+        }
+
+        public void PostProcessReferenceAdded(CollectableObject obj, int reference)
+        {
+            ReferenceAdded?.Invoke(obj, reference) ;
         }
         
     }

@@ -39,6 +39,7 @@ namespace GarbageCollection
             foreach (int newReference in newReferences)
             {
                 References.Add(newReference);
+                _mutator.PostProcessReferenceAdded(this, newReference) ;
             }
         }
 
